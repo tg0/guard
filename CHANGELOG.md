@@ -233,6 +233,7 @@
 [@Gazer]: https://github.com/Gazer
 [@gix]: https://github.com/gix
 [@hashrocketeer]: https://github.com/hashrocketeer
+[@ianwhite]: https://github.com/ianwhite
 [@indirect]: https://github.com/indirect
 [@jeffutter]: https://github.com/jeffutter
 [@johnbintz]: https://github.com/johnbintz
