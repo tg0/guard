@@ -366,5 +366,19 @@ module Guard
       ::Guard.listener.ignore_paths.push(*paths)
     end
 
+    # Ignore files if they will mask.
+    #
+    # @example Ignore some file
+    #   ignore_files ".#", "~"
+    #
+    # @param [Array] masks list of file to ignore
+    #
+    # @see Guard::Listener
+    #
+    def ignore_files(*files)
+      UI.info "Ignoring files: #{ files.join(', ') }"
+      ::Guard.listener.ignore_files.push(*paths)
+    end
+
   end
 end

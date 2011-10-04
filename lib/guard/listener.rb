@@ -17,9 +17,10 @@ module Guard
 
     # Default paths that gets ignored by the listener
     DEFAULT_IGNORE_PATHS = %w[. .. .bundle .git log tmp vendor]
+    DEFAULT_IGNORE_FILES = %w[]
 
     attr_accessor :changed_files
-    attr_reader :directory, :ignore_paths
+    attr_reader :directory, :ignore_paths, :ignore_files
 
     def paused?
       @paused
@@ -59,6 +60,8 @@ module Guard
       @paused                   = false
       @ignore_paths             = DEFAULT_IGNORE_PATHS
       @ignore_paths            |= options[:ignore_paths] if options[:ignore_paths]
+      @ignore_files             = DEFAULT_IGNORE_FILES
+      @ignore_files            |= options[:ignore_files] if options[:ignore_files]
       @watch_all_modifications  = options.fetch(:watch_all_modifications, false)
 
       update_last_event
@@ -214,6 +217,19 @@ module Guard
       end
     end
 
+    # Remove the ignored files from the files list
+    #
+    # @param [Array<String>] file list to listen to
+    # @param [Array<String>] ignore_files the files to ignore
+    # @return children of the passed file list that are not contain ignore_files
+    #
+    def exclude_ignored_files(paths, ignore_files = self.ignore_files)
+       paths.reject do |path| 
+         ignore_files.select{|m| path.include?(m) }.size>0
+       end
+    end
+
+
     private
 
     # Gets a list of files that are in the modified directories.
@@ -223,7 +239,10 @@ module Guard
     # @option options [Symbol] all whether to files in sub directories
     #
     def potentially_modified_files(dirs, options = {})
+#      dirs.delete_if{|path| !(self.ignore_files.select{|mask| puts mask; path.include?(mask) }).empty?  }
       paths = exclude_ignored_paths(dirs)
+      paths = exclude_ignored_files(paths)
+#      paths.delete_if{|path| path.include?("#")  }
 
       if options[:all]
         paths.inject([]) do |array, path|
